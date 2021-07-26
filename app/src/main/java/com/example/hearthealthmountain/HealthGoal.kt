@@ -12,20 +12,41 @@ abstract class HealthGoal(var targetValue: Int) {
 abstract class WindowGoal(targetValue: Int, var start: Date, var window: Duration, var subject: Subject) : HealthGoal(targetValue), Observer {
     var goal: Boolean = false  // whether the goal is achieved or not
 
-    protected fun finalizeGoal() : Unit {}  // a hook. Called only if this goal is time triggered
-    fun startWindow() : Unit {
+    protected fun finalizeGoal() {}  // a hook. Called only if this goal is time triggered
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun startWindow() {
         Log.i("Window goal", "window started")
         subject.registerObserver(this::update)
         /**
          * schedule a timertask that calls endWindow
          */
+        val timer = Timer()
+        timer.schedule(CallEndWindow(), window.seconds * 1000)
     }  // register as observer of data
-    fun endWindow() : Unit {
+    fun endWindow() {
         subject.removeObserver(this::update)
         finalizeGoal()
     }  // unregister as observer of data; call finalizeGoal
+
+    inner class CallStartWindow() : TimerTask() {
+        @RequiresApi(Build.VERSION_CODES.O)
+        override fun run() {
+            startWindow()
+        }
+    }
+    inner class CallEndWindow() : TimerTask() {
+        override fun run() {
+            endWindow()
+        }
+    }
     init {
-        TODO("schedule a timertask that calls startWindow")
+        val timer = Timer()
+        /**
+         * Corresponding to each Timer object is a single background thread that is used to execute all of the timer's tasks,
+         * sequentially. Timer tasks should complete quickly.
+         * If a timer task takes excessive time to complete, it "hogs" the timer's task execution thread.
+         */
+        timer.schedule(CallStartWindow(), start)
     }
 }
 
@@ -42,26 +63,30 @@ abstract class StatisticsGoal(targetValue: Int) : HealthGoal(targetValue)
 abstract class DeadlineGoal(targetValue: Int) : StatisticsGoal(targetValue)
 
 @RequiresApi(Build.VERSION_CODES.O)
-class RepeatingWindowGoal(var windowGoal: WindowGoal, var repetitions: Int) {  // TODO("inherit WindowGoal")
-    private var timer:Timer = Timer()
+class RepeatingWindowGoal(var repetitions: Int, targetValue: Int, start: Date, window: Duration, subject: Subject) : WindowGoal(targetValue, start, window, subject) {  // TODO("inherit WindowGoal")
+    private val timer:Timer = Timer()
     private val TAG = "RepeatingWindowGoal"
-    // TODO("an array of goals: Boolean, size repetitions")
+    private val goalArray = MutableList(repetitions) { false }  // bool goalArray[repetitions]
+    private lateinit var windowGoal:WindowGoal
 
     inner class UpdateWindowGoal() : TimerTask() {
         // create #repetitions of windowGoals
         @RequiresApi(Build.VERSION_CODES.O)
         override fun run() {
-            Log.i(TAG, "run CreateWindowGoal run")
+            Log.i(TAG, "run UpdateWindowGoal run")
             /**
              * store windowGoal's goal variable in the goal array
              * update windowGoal's parameters
              */
-            if (--repetitions <= 0) {
-                timer.cancel()
-            }
         }
     }
     init {
-        timer.schedule(this.UpdateWindowGoal(), Date(), windowGoal.window.seconds * 1000 /** period is time in milliseconds between successive task executions*/)
+        timer.schedule(this.UpdateWindowGoal(), Date(), window.seconds * 1000 /** period is time in milliseconds between successive task executions*/)
+    }
+
+    override fun update(value: Int, time: Date?) {
+        /**
+         * Does RepeatingWindowGoal observe anyone???
+         */
     }
 }
