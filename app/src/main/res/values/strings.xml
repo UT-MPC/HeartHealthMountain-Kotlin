@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Heart Health Mountain</string>
+    <string name="push">Push</string>
 </resources>

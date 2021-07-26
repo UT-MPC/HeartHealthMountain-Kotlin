@@ -1,15 +1,13 @@
 package com.example.hearthealthmountain
 
-import java.util.*
-
 // TODO("Maybe change to Kotlin's Observable")
 interface Observer { //subscriber
-    fun update(value: Int, time: Date? = null) : Unit
+    fun update(value: Any) : Unit
 }
 
 interface Subject {
-    var observers: MutableMap<(Int, Date?) -> Unit, (Int, Date?) -> Unit>
-    fun registerObserver(whatToCall: (Int, Date?)->Unit) : Unit
-    fun removeObserver(whatNotToCall: (Int, Date?)->Unit) : Unit
+    var observers: MutableList<(Any) -> Unit>
+    fun registerObserver(whatToCall: (Any) -> Unit) : Unit
+    fun removeObserver(whatNotToCall: (Any) -> Unit) : Unit
     fun notifyObservers() : Unit
 }

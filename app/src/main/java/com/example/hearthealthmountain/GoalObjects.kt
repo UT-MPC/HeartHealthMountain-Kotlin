@@ -6,14 +6,27 @@ import java.time.Duration
 import java.util.*
 
 @RequiresApi(Build.VERSION_CODES.O)
-class DailyWeighIn(targetValue: Int, start: Date, window: Duration, subject: Subject) : TargetWindowGoal(targetValue, start, window, subject), Subject {
-    /**
-     * Maybe change this to a DailyBooleanGoal? Since it's generic
-    */
+class PushButtonsGoal(repetitions: Int,
+                      targetValue: Int,
+                      start: Date,
+                      window: Duration,
+                      subject: Subject) :
+        RepeatingWindowGoal(repetitions,
+                targetValue,
+                start,
+                window,
+                subject
+        ) {
+    override fun update(value: Any) {
+        TODO("Not yet implemented")
+    }
+}
 
-    override var observers: MutableMap<(Int, Date?) -> Unit, (Int, Date?) -> Unit> = mutableMapOf()
+@RequiresApi(Build.VERSION_CODES.O)
+class DailyWeighIn(targetValue: Int, start: Date, window: Duration, subject: Subject) : WindowGoal(targetValue, start, window, subject), Subject {
+    override var observers: MutableList<(Any) -> Unit> = mutableListOf()
 
-    override fun update(value: Int, time: Date?) {
+    override fun update(value: Any) {
         goal = true
         // TODO("that's all?")
     }
@@ -22,19 +35,19 @@ class DailyWeighIn(targetValue: Int, start: Date, window: Duration, subject: Sub
      * Game points subscribe to health goals
      */
 
-    override fun registerObserver(whatToCall: (Int, Date?) -> Unit) {
-        observers[whatToCall] = whatToCall
+    override fun registerObserver(whatToCall: (Any) -> Unit) {
+        observers.add(whatToCall)
         // TODO("Not yet implemented")
     }
 
-    override fun removeObserver(whatNotToCall: (Int, Date?) -> Unit) {
-        observers.remove (whatNotToCall)
+    override fun removeObserver(whatNotToCall: (Any) -> Unit) {
+        observers.remove(whatNotToCall)
         // TODO("Not yet implemented")
     }
 
     override fun notifyObservers() {
-        for (o in observers.values) {
-            o(if (goal) 1 else 0, start)
+        for (o in observers) {
+            o(goal)
         }
     }
 
