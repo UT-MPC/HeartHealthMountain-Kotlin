@@ -5,14 +5,14 @@ import kotlin.random.Random
 
 class Weight(healthDataSource: String, name: String = "weight") : HealthData(healthDataSource, name), Subject {
 
-    override var observers: MutableList<(Any) -> Unit> = mutableListOf()
+    override var observers: MutableList<(Any?) -> Unit> = mutableListOf()
 
-    override fun registerObserver(whatToCall: (Any) -> Unit) {
+    override fun registerObserver(whatToCall: (Any?) -> Unit) {
         observers.add(whatToCall) // observers.put(whatToCall, whatToCall)
 //        TODO("Not done implementing")
     }
 
-    override fun removeObserver(whatNotToCall: (Any) -> Unit) {
+    override fun removeObserver(whatNotToCall: (Any?) -> Unit) {
         observers.remove (whatNotToCall)
 //        TODO("Not done implementing")
     }
@@ -38,14 +38,14 @@ class Weight(healthDataSource: String, name: String = "weight") : HealthData(hea
 }
 
 class Weighed(healthDataSource: String, name: String) : HealthData(healthDataSource, name), Subject, Observer {
-    override var observers: MutableList<(Any) -> Unit> = mutableListOf()
+    override var observers: MutableList<(Any?) -> Unit> = mutableListOf()
 
-    override fun registerObserver(whatToCall: (Any) -> Unit) {
+    override fun registerObserver(whatToCall: (Any?) -> Unit) {
         observers.add(whatToCall)  // observers.put(whatToCall, whatToCall)
 //        TODO("Not done implementing")
     }
 
-    override fun removeObserver(whatNotToCall: (Any) -> Unit) {
+    override fun removeObserver(whatNotToCall: (Any?) -> Unit) {
         observers.remove (whatNotToCall)
 //        TODO("Not done implementing")
     }
@@ -56,7 +56,7 @@ class Weighed(healthDataSource: String, name: String) : HealthData(healthDataSou
         }
     }
 
-    override fun update(value: Any) {
+    override fun update(value: Any?) {
         this.value = value as Int
         notifyObservers()
     }

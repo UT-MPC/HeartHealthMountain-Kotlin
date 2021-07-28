@@ -17,16 +17,19 @@ class PushButtonsGoal(repetitions: Int,
                 window,
                 subject
         ) {
-    override fun update(value: Any) {
-        TODO("Not yet implemented")
+    var pushes: Int = 0
+    override fun update(value: Any?) {
+        if (++pushes == targetValue) {
+            goal = true
+        }
     }
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
 class DailyWeighIn(targetValue: Int, start: Date, window: Duration, subject: Subject) : WindowGoal(targetValue, start, window, subject), Subject {
-    override var observers: MutableList<(Any) -> Unit> = mutableListOf()
+    override var observers: MutableList<(Any?) -> Unit> = mutableListOf()
 
-    override fun update(value: Any) {
+    override fun update(value: Any?) {
         goal = true
         // TODO("that's all?")
     }
@@ -35,12 +38,12 @@ class DailyWeighIn(targetValue: Int, start: Date, window: Duration, subject: Sub
      * Game points subscribe to health goals
      */
 
-    override fun registerObserver(whatToCall: (Any) -> Unit) {
+    override fun registerObserver(whatToCall: (Any?) -> Unit) {
         observers.add(whatToCall)
         // TODO("Not yet implemented")
     }
 
-    override fun removeObserver(whatNotToCall: (Any) -> Unit) {
+    override fun removeObserver(whatNotToCall: (Any?) -> Unit) {
         observers.remove(whatNotToCall)
         // TODO("Not yet implemented")
     }

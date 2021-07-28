@@ -12,12 +12,13 @@ abstract class HealthGoal(var targetValue: Int)
 abstract class WindowGoal(targetValue: Int, var start: Date, var window: Duration, var subject: Subject) : HealthGoal(targetValue), Observer {
     var goal: Boolean = false  // whether the goal is achieved or not
     private val timer = Timer()
+    private val tag = "WindowGoal"
 
     protected fun finalizeGoal() {}  // a hook. Called only if this goal is time triggered
     @RequiresApi(Build.VERSION_CODES.O)
     private inner class StartWindow() : TimerTask() {
         override fun run() {
-            Log.i("Window goal", "window started")
+            Log.i(tag, "window started")
             subject.registerObserver(this@WindowGoal::update)
             timer.schedule(EndWindow(), window.seconds * 1000)
         }
@@ -27,6 +28,7 @@ abstract class WindowGoal(targetValue: Int, var start: Date, var window: Duratio
             subject.removeObserver(this@WindowGoal::update)
             finalizeGoal()
             timer.cancel()
+            Log.i(tag, "Window ending, goal is ${goal.toString()}")
         }
 
     }  // unregister as observer of data; call finalizeGoal
