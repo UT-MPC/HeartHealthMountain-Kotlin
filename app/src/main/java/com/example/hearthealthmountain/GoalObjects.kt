@@ -19,8 +19,10 @@ class PushButtonsGoal(repetitions: Int,
         ) {
     var pushes: Int = 0
     override fun update(value: Any?) {
-        if (++pushes == targetValue) {
+        if (!goal && ++pushes == targetValue) {
             goal = true
+            // reset pushes
+            pushes = 0
         }
     }
 }

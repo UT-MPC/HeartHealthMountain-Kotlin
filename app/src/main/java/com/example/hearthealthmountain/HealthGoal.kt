@@ -10,9 +10,14 @@ abstract class HealthGoal(var targetValue: Int)
 
 @RequiresApi(Build.VERSION_CODES.O)
 abstract class WindowGoal(targetValue: Int, var start: Date, var window: Duration, var subject: Subject) : HealthGoal(targetValue), Observer {
-    var goal: Boolean = false  // whether the goal is achieved or not
     private val timer = Timer()
     private val tag = "WindowGoal"
+
+    var goal: Boolean = false  // whether the goal is achieved or not
+        set(value) {
+            field = value
+            Log.i(tag, "Setting goal to $value")
+        }
 
     protected fun finalizeGoal() {}  // a hook. Called only if this goal is time triggered
     @RequiresApi(Build.VERSION_CODES.O)
@@ -27,8 +32,10 @@ abstract class WindowGoal(targetValue: Int, var start: Date, var window: Duratio
         override fun run() {
             subject.removeObserver(this@WindowGoal::update)
             finalizeGoal()
-            timer.cancel()
             Log.i(tag, "Window ending, goal is ${goal.toString()}")
+
+            // reset goal
+            goal = false
         }
 
     }  // unregister as observer of data; call finalizeGoal
@@ -68,7 +75,7 @@ abstract class RepeatingWindowGoal(private var repetitions: Int,
         // create #repetitions of windowGoals
         @RequiresApi(Build.VERSION_CODES.O)
         override fun run() {
-            Log.i(tag, "UpdateWindowGoal ending ${goalArray.size} + 1 rep")
+            Log.i(tag, "UpdateWindowGoal ending ${goalArray.size + 1} rep")
             /**
              * store windowGoal's goal variable in the goal array
              * update windowGoal's parameters
@@ -76,6 +83,7 @@ abstract class RepeatingWindowGoal(private var repetitions: Int,
             goalArray.add(goal)
             if (goalArray.size == repetitions) {  // finished all the repetitions
                 timer.cancel()
+                Log.i(tag, "Finished all repetitions.\n Goals: ${goalArray.toString()}")
             } else {  // still more reps to do
                 start = Date(start.time + window.seconds * 1000)
                 goal = false
