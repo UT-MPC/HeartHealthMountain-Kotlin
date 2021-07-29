@@ -19,22 +19,27 @@ abstract class WindowGoal(
     private val tag = "WindowGoal"
 
     var goal: Boolean = false  // whether the goal is achieved or not
+        set(value) {
+            field = value
+            if (value) {
+                Log.i("WindowGoal", "Set goal true")
+            }
+        }
 
     protected fun finalizeGoal() {}  // a hook. Called only if this goal is time triggered
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private inner class StartWindow() : TimerTask() {
+    private inner class StartWindow() : TimerTask() {  // TODO(Should goal be refreshed here, or refreshed when window ends?)
         override fun run() {
-            Log.i(tag, "window started")
             subject.registerObserver(this@WindowGoal::update)
 //            timer.schedule(EndWindow(), window.seconds * 1000)
+            Log.i(tag, "=====Window Starting=====")
         }
     }  // register as observer of data
 
     protected fun endWindow() {
         subject.removeObserver(this@WindowGoal::update)
         finalizeGoal()
-        Log.i(tag, "Window ending, goal is ${goal.toString()}")
 
         // reset goal
         goal = false
@@ -81,7 +86,7 @@ abstract class RepeatingWindowGoal(
         // create #repetitions of windowGoals
         @RequiresApi(Build.VERSION_CODES.O)
         override fun run() {
-            Log.i(tag, "UpdateWindowGoal ending ${goalArray.size + 1} rep")
+            Log.i(tag, "Ending ${goalArray.size + 1} rep, goal is ${goal.toString()}")
             /**
              * store windowGoal's goal variable in the goal array
              * update windowGoal's parameters

@@ -2,6 +2,7 @@ package com.example.hearthealthmountain
 
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -20,6 +21,7 @@ class MainActivity : AppCompatActivity() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
+        Log.i("onCreate", "start")
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         weight = Weight(healthDataSource = "someDevice", name = "weight")

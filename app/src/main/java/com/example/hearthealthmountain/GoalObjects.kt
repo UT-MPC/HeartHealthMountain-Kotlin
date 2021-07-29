@@ -41,9 +41,9 @@ class DailyWeighIn(
     subject: Subject
 ) : RepeatingWindowGoal(repetitions, streak, targetValue, start, window, subject) {
     override fun update(value: Any?) {
-        Log.i("DailyWeighIn", "value: $value")
         if (!goal) {
             goal = true
         }
+        Log.i("DailyWeighIn", "value: $value")
     }
 }

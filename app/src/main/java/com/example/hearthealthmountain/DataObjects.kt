@@ -32,7 +32,6 @@ class Weight(healthDataSource: String, name: String = "weight") : HealthData(hea
                 value = Random.nextInt(100, 200)
                 time = Date()
                 notifyObservers()
-                Log.i("Weight", "weight is $value")
             } else {
                 value = -1
                 time = null
@@ -71,7 +70,6 @@ class Weighed(healthDataSource: String, name: String) : HealthData(healthDataSou
     }
 
     override fun update(value: Any?) {
-        Log.i("Weighed", "value is $value")
         this.value = value as Int
         notifyObservers()
     }
