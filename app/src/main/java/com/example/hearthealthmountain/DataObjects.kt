@@ -1,20 +1,23 @@
 package com.example.hearthealthmountain
 
+import android.os.Build
+import android.util.Log
+import androidx.annotation.RequiresApi
+import java.time.Duration
 import java.util.*
 import kotlin.random.Random
 
-class Weight(healthDataSource: String, name: String = "weight") : HealthData(healthDataSource, name), Subject {
+@RequiresApi(Build.VERSION_CODES.O)
+class Weight(healthDataSource: String, name: String = "weight") : HealthData(healthDataSource, name) {
 
     override var observers: MutableList<(Any?) -> Unit> = mutableListOf()
 
     override fun registerObserver(whatToCall: (Any?) -> Unit) {
-        observers.add(whatToCall) // observers.put(whatToCall, whatToCall)
-//        TODO("Not done implementing")
+        observers.add(whatToCall)
     }
 
     override fun removeObserver(whatNotToCall: (Any?) -> Unit) {
         observers.remove (whatNotToCall)
-//        TODO("Not done implementing")
     }
 
     override fun notifyObservers() {
@@ -23,17 +26,30 @@ class Weight(healthDataSource: String, name: String = "weight") : HealthData(hea
         }
     }
 
-    override fun newValue(){
-        if (Random.nextInt(0,10) % 10 == 0) {
-            value = Random.nextInt(100, 200)
-            time = Date()
-            notifyObservers()
-        } else {
-            value = -1
-            time = null
+    inner class newValue(): TimerTask(){
+        override fun run() {
+            if (Random.nextInt(0,10) % 10 != 0) {
+                value = Random.nextInt(100, 200)
+                time = Date()
+                notifyObservers()
+                Log.i("Weight", "weight is $value")
+            } else {
+                value = -1
+                time = null
+                Log.i("Weight", "weight is null")
+            }
         }
 //        TODO("Get new weight in a less fake way!!")
     }
+
+    var updatePeriod: Long
+
+    init {
+        updatePeriod = 20
+        val timer = Timer()
+        timer.schedule(newValue(), Date(), Duration.ofSeconds(updatePeriod).seconds*1000)
+    }
+
 
 }
 
@@ -41,13 +57,11 @@ class Weighed(healthDataSource: String, name: String) : HealthData(healthDataSou
     override var observers: MutableList<(Any?) -> Unit> = mutableListOf()
 
     override fun registerObserver(whatToCall: (Any?) -> Unit) {
-        observers.add(whatToCall)  // observers.put(whatToCall, whatToCall)
-//        TODO("Not done implementing")
+        observers.add(whatToCall)
     }
 
     override fun removeObserver(whatNotToCall: (Any?) -> Unit) {
         observers.remove (whatNotToCall)
-//        TODO("Not done implementing")
     }
 
     override fun notifyObservers() {
@@ -57,6 +71,7 @@ class Weighed(healthDataSource: String, name: String) : HealthData(healthDataSou
     }
 
     override fun update(value: Any?) {
+        Log.i("Weighed", "value is $value")
         this.value = value as Int
         notifyObservers()
     }

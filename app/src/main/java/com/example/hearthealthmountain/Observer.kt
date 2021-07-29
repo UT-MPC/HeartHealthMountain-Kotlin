@@ -1,6 +1,6 @@
 package com.example.hearthealthmountain
 
-// TODO("Maybe change to Kotlin's Observable")
+
 interface Observer { //subscriber
     fun update(value: Any?) : Unit
 }

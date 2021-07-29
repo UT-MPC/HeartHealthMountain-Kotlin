@@ -9,34 +9,35 @@ import java.util.*
 abstract class HealthGoal(var targetValue: Int)
 
 @RequiresApi(Build.VERSION_CODES.O)
-abstract class WindowGoal(targetValue: Int, var start: Date, var window: Duration, var subject: Subject) : HealthGoal(targetValue), Observer {
+abstract class WindowGoal(
+    targetValue: Int,
+    var start: Date,
+    var window: Duration,
+    var subject: Subject
+) : HealthGoal(targetValue), Observer {
     private val timer = Timer()
     private val tag = "WindowGoal"
 
     var goal: Boolean = false  // whether the goal is achieved or not
-        set(value) {
-            field = value
-            Log.i(tag, "Setting goal to $value")
-        }
 
     protected fun finalizeGoal() {}  // a hook. Called only if this goal is time triggered
+
     @RequiresApi(Build.VERSION_CODES.O)
     private inner class StartWindow() : TimerTask() {
         override fun run() {
             Log.i(tag, "window started")
             subject.registerObserver(this@WindowGoal::update)
-            timer.schedule(EndWindow(), window.seconds * 1000)
+//            timer.schedule(EndWindow(), window.seconds * 1000)
         }
     }  // register as observer of data
-    private inner class EndWindow() : TimerTask() {
-        override fun run() {
-            subject.removeObserver(this@WindowGoal::update)
-            finalizeGoal()
-            Log.i(tag, "Window ending, goal is ${goal.toString()}")
 
-            // reset goal
-            goal = false
-        }
+    protected fun endWindow() {
+        subject.removeObserver(this@WindowGoal::update)
+        finalizeGoal()
+        Log.i(tag, "Window ending, goal is ${goal.toString()}")
+
+        // reset goal
+        goal = false
 
     }  // unregister as observer of data; call finalizeGoal
 
@@ -48,26 +49,31 @@ abstract class WindowGoal(targetValue: Int, var start: Date, var window: Duratio
          */
         startWindow()
     }
+
     protected fun startWindow() {
         timer.schedule(StartWindow(), start)
     }
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
-abstract class RepeatingWindowGoal(private var repetitions: Int,
-                          targetValue: Int,
-                          start: Date, window: Duration,
-                          subject: Subject) :
-        WindowGoal(targetValue,
-                start,
-                window,
-                subject) {
+abstract class RepeatingWindowGoal(
+    private var repetitions: Int, var streak: Int = 0,
+    targetValue: Int,
+    start: Date, window: Duration,
+    subject: Subject
+) :
+    WindowGoal(
+        targetValue,
+        start,
+        window,
+        subject
+    ) {
     /**
      * Since RepeatingWindowGoal is a WindowGoal, the super class is the window goal.
      * UpdateWindowGoal will update start, then call startWindow()
      * goalArray.size keeps track of how many repetitions have been done
      */
-    private val timer:Timer = Timer()
+    private val timer: Timer = Timer()
     private val tag = "RepeatingWindowGoal"
     private val goalArray = mutableListOf<Boolean>()  // bool goalArray[repetitions]
 
@@ -81,6 +87,7 @@ abstract class RepeatingWindowGoal(private var repetitions: Int,
              * update windowGoal's parameters
              */
             goalArray.add(goal)
+            endWindow()  // end the previous window before starting new one
             if (goalArray.size == repetitions) {  // finished all the repetitions
                 timer.cancel()
                 Log.i(tag, "Finished all repetitions.\n Goals: ${goalArray.toString()}")
@@ -91,11 +98,14 @@ abstract class RepeatingWindowGoal(private var repetitions: Int,
             }
         }
     }
+
     init {
         timer.schedule(
-                this.UpdateWindowGoal(),
-                Date(start.time + window.seconds * 1000), /** the first window goal has started, so schedule the next*/
-                window.seconds * 1000 /** period is time in milliseconds between successive task executions*/
+            this.UpdateWindowGoal(),
+            Date(start.time + window.seconds * 1000),
+            /** the first window goal has started, so schedule the next*/
+            window.seconds * 1000
+            /** period is time in milliseconds between successive task executions*/
         )
     }
 }
