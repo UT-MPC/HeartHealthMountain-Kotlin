@@ -14,7 +14,7 @@ abstract class WindowGoal(
     var start: Date,
     var window: Duration,
     var subject: Subject
-) : HealthGoal(targetValue), Observer {
+) : HealthGoal(targetValue), Observer, Subject {
     private val timer = Timer()
     private val tag = "WindowGoal"
 
@@ -26,25 +26,29 @@ abstract class WindowGoal(
             }
         }
 
-    protected fun finalizeGoal() {}  // a hook. Called only if this goal is time triggered
+    protected open fun finalizeGoal() {}  // a hook. Called only if this goal is time triggered
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private inner class StartWindow() : TimerTask() {  // TODO(Should goal be refreshed here, or refreshed when window ends?)
+    private inner class StartWindow() : TimerTask() {
         override fun run() {
+            /**
+             * Reset goal
+             * Register as observer
+             */
+            goal = false
             subject.registerObserver(this@WindowGoal::update)
-//            timer.schedule(EndWindow(), window.seconds * 1000)
             Log.i(tag, "=====Window Starting=====")
         }
-    }  // register as observer of data
+    }
 
     protected fun endWindow() {
+        /**
+         * Calling removeObserver first because last minute updates shouldn't be allowed.
+         * When goals are being finalized, there shouldn't be any stragglers.
+         */
         subject.removeObserver(this@WindowGoal::update)
         finalizeGoal()
-
-        // reset goal
-        goal = false
-
-    }  // unregister as observer of data; call finalizeGoal
+    }
 
     init {
         /**
@@ -86,19 +90,19 @@ abstract class RepeatingWindowGoal(
         // create #repetitions of windowGoals
         @RequiresApi(Build.VERSION_CODES.O)
         override fun run() {
-            Log.i(tag, "Ending ${goalArray.size + 1} rep, goal is ${goal.toString()}")
             /**
              * store windowGoal's goal variable in the goal array
              * update windowGoal's parameters
              */
             goalArray.add(goal)
             endWindow()  // end the previous window before starting new one
+            Log.i(tag, "Ending ${goalArray.size} rep, goal is ${goal.toString()}")
+
             if (goalArray.size == repetitions) {  // finished all the repetitions
                 timer.cancel()
                 Log.i(tag, "Finished all repetitions.\n Goals: ${goalArray.toString()}")
             } else {  // still more reps to do
                 start = Date(start.time + window.seconds * 1000)
-                goal = false
                 startWindow()
             }
         }
@@ -108,7 +112,10 @@ abstract class RepeatingWindowGoal(
         timer.schedule(
             this.UpdateWindowGoal(),
             Date(start.time + window.seconds * 1000),
-            /** the first window goal has started, so schedule the next*/
+            /** Because RepeatingWindowGoal is a WindowGoal,
+             * the default constructor creates the first WindowGoal
+             * so schedule the next
+             */
             window.seconds * 1000
             /** period is time in milliseconds between successive task executions*/
         )

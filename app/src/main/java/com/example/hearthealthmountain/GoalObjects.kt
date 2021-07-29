@@ -18,6 +18,7 @@ class PushButtonsGoal(repetitions: Int,
                 window = window,
                 subject = subject
         ) {
+
     var pushes: Int = 0
     override fun update(value: Any?) {
         /**
@@ -27,6 +28,24 @@ class PushButtonsGoal(repetitions: Int,
             goal = true
             // reset pushes
             pushes = 0
+
+            notifyObservers()  // game elements should be notified
+        }
+    }
+
+    override var observers: MutableList<(Any?) -> Unit> = mutableListOf()
+
+    override fun registerObserver(whatToCall: (Any?) -> Unit) {
+        observers.add(whatToCall)
+    }
+
+    override fun removeObserver(whatNotToCall: (Any?) -> Unit) {
+        observers.remove(whatNotToCall)
+    }
+
+    override fun notifyObservers() {
+        for (o in observers) {
+            o(null)
         }
     }
 }
@@ -40,10 +59,34 @@ class DailyWeighIn(
     window: Duration,
     subject: Subject
 ) : RepeatingWindowGoal(repetitions, streak, targetValue, start, window, subject) {
+
     override fun update(value: Any?) {
         if (!goal) {
             goal = true
+            notifyObservers()
         }
         Log.i("DailyWeighIn", "value: $value")
+    }
+
+    override fun finalizeGoal() {
+        if (!goal) {
+            notifyObservers()
+        }
+    }
+
+    override var observers: MutableList<(Any?) -> Unit> = mutableListOf()
+
+    override fun registerObserver(whatToCall: (Any?) -> Unit) {
+        observers.add(whatToCall)
+    }
+
+    override fun removeObserver(whatNotToCall: (Any?) -> Unit) {
+        observers.remove(whatNotToCall)
+    }
+
+    override fun notifyObservers() {
+        for (o in observers) {
+            o(goal)
+        }
     }
 }

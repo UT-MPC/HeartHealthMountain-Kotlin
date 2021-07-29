@@ -27,7 +27,8 @@ class MainActivity : AppCompatActivity() {
         weight = Weight(healthDataSource = "someDevice", name = "weight")
         weighed = Weighed(healthDataSource = "computed", name = "weighed")
         weight.registerObserver(weighed::update)
-//        heart = Heart(1000)
+        var heart = Heart(1000)
+        heart.value = 500  // let there be 500 hearts in the beginning
         val dailyWeighIn = DailyWeighIn(
             repetitions = 30,
             streak = 25,
@@ -36,6 +37,7 @@ class MainActivity : AppCompatActivity() {
             window = Duration.ofSeconds(weight.updatePeriod),
             subject = weighed
         )
+        dailyWeighIn.registerObserver(heart::update)
 //         val pushButtonSubject = PushButtonSubject()
 //         pushButtonsGoal = PushButtonsGoal(5, 3, Date(), Duration.ofMinutes(1), pushButtonSubject)
 //
