@@ -51,6 +51,49 @@ class PushButtonsGoal(repetitions: Int,
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
+class DailyStepGoal(
+    repetitions: Int,
+    streak: Int = 0,
+    targetValue: Int,
+    start: Date,
+    window: Duration,
+    subject: Subject
+) : RepeatingWindowGoal(repetitions, streak, targetValue, start, window, subject) {
+    /**
+     * If the user reaches their target steps, they earn a heart
+     * Else, no penalty, therefore finalizeGoal isn't overridden
+     */
+    var steps: Int
+    override fun update(value: Any?) {
+        steps += value as Int
+        if (!goal && steps >= targetValue) {
+            goal = true
+            notifyObservers()
+        }
+    }
+
+    override var observers: MutableList<(Any?) -> Unit> = mutableListOf()
+
+    override fun registerObserver(whatToCall: (Any?) -> Unit) {
+        observers.add(whatToCall)
+    }
+
+    override fun removeObserver(whatNotToCall: (Any?) -> Unit) {
+        observers.remove(whatNotToCall)
+    }
+
+    override fun notifyObservers() {
+        for (o in observers) {
+            o(goal)
+        }
+    }
+
+    init {
+        steps = 0
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
 class DailyWeighIn(
     repetitions: Int,
     streak: Int = 0,
@@ -59,7 +102,10 @@ class DailyWeighIn(
     window: Duration,
     subject: Subject
 ) : RepeatingWindowGoal(repetitions, streak, targetValue, start, window, subject) {
-
+    /**
+     * If user weighs themselves, then they'll earn a heart (observer)
+     * Else they lose a heart
+     */
     override fun update(value: Any?) {
         if (!goal) {
             goal = true
