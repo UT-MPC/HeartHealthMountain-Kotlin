@@ -43,7 +43,7 @@ class MainActivity : AppCompatActivity() {
         weightUI = findViewById<TextView>(R.id.editTextWeight)
 
         val timer = Timer()
-        timer.schedule(updateTextView(), Date())
+        timer.schedule(updateTextView(), Date(), 20*1000)
 
         val dailyWeighIn = DailyWeighIn(
             repetitions = 30,
