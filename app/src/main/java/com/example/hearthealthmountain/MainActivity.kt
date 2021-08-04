@@ -4,6 +4,7 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
+import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import java.time.Duration
@@ -13,6 +14,9 @@ import com.example.hearthealthmountain.DailyStepGoal as DailyStepGoal1
 class MainActivity : AppCompatActivity() {
     private lateinit var weight: Weight
     private lateinit var weighed: Weighed
+    private lateinit var heartUI: TextView
+    private lateinit var weightUI: TextView
+    private lateinit var heart: Heart
 
     //    private lateinit var heart: Heart
     private lateinit var pushButtonsGoal: PushButtonsGoal
@@ -28,12 +32,18 @@ class MainActivity : AppCompatActivity() {
 
         val startDate = Date(Date().time + 5000)  // 5 seconds after onCreate starts running
 
-        val heart = Heart(1000)
+        heart = Heart(1000)
+        heartUI = findViewById<TextView> (R.id.editTextHeart)
         heart.value = 500  // let there be 500 hearts in the beginning
+        heartUI.text = heart.value.toString()
 
         weight = Weight(healthDataSource = "someDevice", name = "weight")
         weighed = Weighed(healthDataSource = "computed", name = "weighed")
         weight.registerObserver(weighed::update)
+        weightUI = findViewById<TextView>(R.id.editTextWeight)
+
+        val timer = Timer()
+        timer.schedule(updateTextView(), Date())
 
         val dailyWeighIn = DailyWeighIn(
             repetitions = 30,
@@ -57,6 +67,8 @@ class MainActivity : AppCompatActivity() {
         dailyStepGoal.registerObserver(heart::update)
 
 
+
+
 //         val pushButtonSubject = PushButtonSubject()
 //         pushButtonsGoal = PushButtonsGoal(5, 3, Date(), Duration.ofMinutes(1), pushButtonSubject)
 //
@@ -67,4 +79,14 @@ class MainActivity : AppCompatActivity() {
 //             pushButton.text = (++pushes).toString()
         }
     }
+
+    inner class updateTextView(): TimerTask() {
+        override fun run() {
+            Log.i("updateTextView", "updating")
+            heartUI.text = heart.value.toString()
+            weightUI.text = weight.value.toString()
+        }
+
+    }
+
 }

@@ -5,6 +5,7 @@ import java.lang.Integer.min
 
 class Heart(maxValue: Int) : Points(maxValue) {
     private val tag = "Heart"
+
     override fun update(value: Any?) {
         this.value = calculatePoints(value as Boolean)
         Log.i(tag, "Num hearts: ${this.value}")
@@ -20,6 +21,7 @@ class Heart(maxValue: Int) : Points(maxValue) {
             if (this.value - 1 >= 0) this.value - 1 else 0
         }
     }
+
 }
 
 //class Coins(maxValue: Int) : Points(maxValue) {
