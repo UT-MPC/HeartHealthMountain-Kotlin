@@ -7,6 +7,7 @@ import java.time.Duration
 import java.util.*
 import kotlin.random.Random
 
+
 @RequiresApi(Build.VERSION_CODES.O)
 class Step(healthDataSource: String, name: String) : HealthData(healthDataSource, name){
     override var observers: MutableList<(Any?) -> Unit> = mutableListOf()
