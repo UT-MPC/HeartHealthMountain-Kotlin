@@ -1,6 +1,4 @@
-package com.example.hearthealthmountain
-
-import com.example.healthgamifylib.Observer
+package com.example.healthgamifylib
 
 class Game {
 }

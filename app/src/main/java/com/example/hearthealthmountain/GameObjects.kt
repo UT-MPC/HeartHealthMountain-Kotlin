@@ -1,6 +1,7 @@
 package com.example.hearthealthmountain
 
 import android.util.Log
+import com.example.healthgamifylib.Points
 import java.lang.Integer.min
 
 class Heart(maxValue: Int) : Points(maxValue) {
