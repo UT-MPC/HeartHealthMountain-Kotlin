@@ -3,6 +3,7 @@ package com.example.hearthealthmountain
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
+import com.example.healthgamifylib.RepeatingWindowGoal
 import com.example.healthgamifylib.Subject
 import java.time.Duration
 import java.util.*

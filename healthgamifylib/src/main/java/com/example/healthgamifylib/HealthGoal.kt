@@ -1,12 +1,10 @@
-package com.example.hearthealthmountain
+package com.example.healthgamifylib
 
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import java.time.Duration
 import java.util.*
-import com.example.healthgamifylib.Subject
-import com.example.healthgamifylib.Observer
 
 abstract class HealthGoal(var targetValue: Int)
 
