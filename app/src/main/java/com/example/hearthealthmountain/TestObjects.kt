@@ -1,5 +1,7 @@
 package com.example.hearthealthmountain
 
+import com.example.healthgamifylib.Subject
+
 class PushButtonSubject : Subject {
     override var observers: MutableList<(Any?) -> Unit> = mutableListOf()
     override fun registerObserver(whatToCall: (Any?) -> Unit) {

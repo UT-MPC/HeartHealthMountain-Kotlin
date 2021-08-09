@@ -1,5 +1,4 @@
-package com.example.hearthealthmountain
-
+package com.example.healthgamifylib
 
 interface Observer { //subscriber
     fun update(value: Any?) : Unit

@@ -1,5 +1,6 @@
 package com.example.hearthealthmountain
 
+import com.example.healthgamifylib.Subject
 import java.util.*
 
 abstract class Data(val name: String) {

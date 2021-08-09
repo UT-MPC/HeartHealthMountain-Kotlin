@@ -3,6 +3,7 @@ package com.example.hearthealthmountain
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
+import com.example.healthgamifylib.Subject
 import java.time.Duration
 import java.util.*
 
@@ -11,7 +12,8 @@ class PushButtonsGoal(repetitions: Int,
                       targetValue: Int,
                       start: Date,
                       window: Duration,
-                      subject: Subject) :
+                      subject: Subject
+) :
         RepeatingWindowGoal(repetitions = repetitions,
                 targetValue = targetValue,
                 start = start,
