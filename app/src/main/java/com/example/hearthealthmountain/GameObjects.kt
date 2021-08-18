@@ -7,12 +7,9 @@ import java.lang.Integer.min
 class Heart(maxValue: Int) : Points(maxValue) {
     private val tag = "Heart"
 
-    val saveState = HeartSaveState()
-
     override fun update(value: Any?) {
         this.value = calculatePoints(value as Boolean)
-        saveState.store(this.value)
-        Log.i(tag, "Num hearts: ${saveState.currentHearts}")
+        Log.i(tag, "Num hearts: ${this.value}")
     }
     private fun calculatePoints(v: Boolean) : Int {
         return if (v ) {
