@@ -5,6 +5,7 @@ import java.util.*
 abstract class Data(val name: String) {
     protected var creationDate: Date = Date()  // allows backtracking
     var value: Int = -1
+    open fun updateValue() {}  // a hook
 }
 
 abstract class HealthData(val healthDataSource: String, name: String) : Data(name), Subject {

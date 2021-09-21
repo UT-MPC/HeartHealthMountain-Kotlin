@@ -29,6 +29,11 @@ class Step(healthDataSource: String, name: String) : HealthData(healthDataSource
         }
     }
 
+    override fun updateValue() {
+        value = 0
+        val timer = Timer()
+        timer.schedule(NewValue(), Date(), Duration.ofSeconds(updatePeriod).seconds*1000)
+    }
     inner class NewValue(): TimerTask(){
         override fun run() {
             if (Random.nextInt(0,10) % 5 != 0) {
@@ -47,9 +52,7 @@ class Step(healthDataSource: String, name: String) : HealthData(healthDataSource
     var updatePeriod: Long = 1  // updating step data every second
 
     init {
-        value = 0
-        val timer = Timer()
-        timer.schedule(NewValue(), Date(), Duration.ofSeconds(updatePeriod).seconds*1000)
+        updateValue()
     }
 }
 
