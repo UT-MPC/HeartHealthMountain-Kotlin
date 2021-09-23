@@ -36,16 +36,6 @@ class PushButtonsGoal(repetitions: Int,
         }
     }
 
-    override var observers: MutableList<(Any?) -> Unit> = mutableListOf()
-
-    override fun registerObserver(whatToCall: (Any?) -> Unit) {
-        observers.add(whatToCall)
-    }
-
-    override fun removeObserver(whatNotToCall: (Any?) -> Unit) {
-        observers.remove(whatNotToCall)
-    }
-
     override fun notifyObservers() {
         for (o in observers) {
             o(null)
@@ -75,21 +65,6 @@ class DailyStepGoal(
         }
     }
 
-    override var observers: MutableList<(Any?) -> Unit> = mutableListOf()
-
-    override fun registerObserver(whatToCall: (Any?) -> Unit) {
-        observers.add(whatToCall)
-    }
-
-    override fun removeObserver(whatNotToCall: (Any?) -> Unit) {
-        observers.remove(whatNotToCall)
-    }
-
-    override fun notifyObservers() {
-        for (o in observers) {
-            o(goal)
-        }
-    }
 
     init {
         steps = 0
@@ -120,22 +95,6 @@ class DailyWeighIn(
     override fun finalizeGoal() {
         if (!goal) {
             notifyObservers()
-        }
-    }
-
-    override var observers: MutableList<(Any?) -> Unit> = mutableListOf()
-
-    override fun registerObserver(whatToCall: (Any?) -> Unit) {
-        observers.add(whatToCall)
-    }
-
-    override fun removeObserver(whatNotToCall: (Any?) -> Unit) {
-        observers.remove(whatNotToCall)
-    }
-
-    override fun notifyObservers() {
-        for (o in observers) {
-            o(goal)
         }
     }
 }

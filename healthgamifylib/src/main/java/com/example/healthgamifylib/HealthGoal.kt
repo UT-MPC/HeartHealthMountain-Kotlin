@@ -15,6 +15,21 @@ abstract class WindowGoal(
     var window: Duration,
     var subject: Subject
 ) : HealthGoal(targetValue), Observer, Subject {
+    override var observers: MutableList<(Any?) -> Unit> = mutableListOf()
+    override fun registerObserver(whatToCall: (Any?) -> Unit) {
+        observers.add(whatToCall)
+    }
+
+    override fun removeObserver(whatNotToCall: (Any?) -> Unit) {
+        observers.remove(whatNotToCall)
+    }
+
+    override fun notifyObservers() {
+        for (o in observers) {
+            o(goal)
+        }
+    }
+
     private val timer = Timer()
     private val tag = "WindowGoal"
 
