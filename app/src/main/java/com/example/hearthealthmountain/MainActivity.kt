@@ -18,6 +18,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var weightUI: TextView
     private lateinit var heart: Heart
     private lateinit var withingsScale: WithingsScale
+    private lateinit var activityTracker: ActivityTracker
 
     //    private lateinit var heart: Heart
     private lateinit var pushButtonsGoal: PushButtonsGoal
@@ -39,6 +40,8 @@ class MainActivity : AppCompatActivity() {
         heartUI.text = heart.value.toString()
 
         withingsScale = WithingsScale("Withings Scale")
+        activityTracker = ActivityTracker("Activity Tracker")
+
         weighed = Weighed(healthDataSource = withingsScale, name = "weighed")
         weightUI = findViewById<TextView>(R.id.editTextWeight)
 
@@ -55,16 +58,16 @@ class MainActivity : AppCompatActivity() {
         )
         dailyWeighIn.registerObserver(heart::update)
 
-//        val step = Step(healthDataSource = "someDevice", name = "step")
-//        val dailyStepGoal = DailyStepGoal1(
-//            repetitions = 30,
-//            streak = 30,
-//            targetValue = 1600,
-//            start = startDate,
-//            window = Duration.ofSeconds(step.updatePeriod*20),
-//            subject = step
-//        )
-//        dailyStepGoal.registerObserver(heart::update)
+        val step = Step(healthDataSource = activityTracker, name = "step")
+        val dailyStepGoal = DailyStepGoal(
+            repetitions = 30,
+            streak = 30,
+            targetValue = 1600,
+            start = startDate,
+            window = Duration.ofSeconds(activityTracker.updatePeriod*20),
+            subject = step
+        )
+        dailyStepGoal.registerObserver(heart::update)
 
 
 
