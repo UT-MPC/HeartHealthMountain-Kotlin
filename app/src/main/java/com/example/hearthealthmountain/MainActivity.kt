@@ -14,16 +14,15 @@ import io.realm.annotations.PrimaryKey
 import io.realm.annotations.Required
 import java.time.Duration
 import java.util.*
-import com.example.hearthealthmountain.DailyStepGoal as DailyStepGoal1
 
 // private key: 8b22a2fe-4245-400c-b225-a18dcf509f38
 // realm-cli login --api-key onheejte --private-api-key 8b22a2fe-4245-400c-b225-a18dcf509f38
 class MainActivity : AppCompatActivity() {
-    private lateinit var weight: Weight
     private lateinit var weighed: Weighed
     private lateinit var heartUI: TextView
     private lateinit var weightUI: TextView
     private lateinit var heart: Heart
+    private lateinit var withingsScale: WithingsScale
 
     //    private lateinit var heart: Heart
     private lateinit var pushButtonsGoal: PushButtonsGoal
@@ -53,9 +52,8 @@ class MainActivity : AppCompatActivity() {
         heart.value = 500  // let there be 500 hearts in the beginning
         heartUI.text = heart.value.toString()
 
-        weight = Weight(healthDataSource = "someDevice", name = "weight")
-        weighed = Weighed(healthDataSource = "computed", name = "weighed")
-        weight.registerObserver(weighed::update)
+        withingsScale = WithingsScale("Withings Scale")
+        weighed = Weighed(healthDataSource = withingsScale, name = "weighed")
         weightUI = findViewById<TextView>(R.id.editTextWeight)
 
         val timer = Timer()
@@ -66,21 +64,21 @@ class MainActivity : AppCompatActivity() {
             streak = 25,
             targetValue = 1,
             start = startDate,
-            window = Duration.ofSeconds(weight.updatePeriod),
+            window = Duration.ofSeconds(withingsScale.updatePeriod),
             subject = weighed
         )
         dailyWeighIn.registerObserver(heart::update)
 
-        val step = Step(healthDataSource = "someDevice", name = "step")
-        val dailyStepGoal = DailyStepGoal1(
-            repetitions = 30,
-            streak = 30,
-            targetValue = 1600,
-            start = startDate,
-            window = Duration.ofSeconds(step.updatePeriod*20),
-            subject = step
-        )
-        dailyStepGoal.registerObserver(heart::update)
+//        val step = Step(healthDataSource = "someDevice", name = "step")
+//        val dailyStepGoal = DailyStepGoal1(
+//            repetitions = 30,
+//            streak = 30,
+//            targetValue = 1600,
+//            start = startDate,
+//            window = Duration.ofSeconds(step.updatePeriod*20),
+//            subject = step
+//        )
+//        dailyStepGoal.registerObserver(heart::update)
 
 
 
@@ -100,7 +98,7 @@ class MainActivity : AppCompatActivity() {
         override fun run() {
             Log.i("updateTextView", "updating")
             heartUI.text = heart.value.toString()
-            weightUI.text = weight.value.toString()
+            weightUI.text = weighed.value.toString()
         }
 
     }

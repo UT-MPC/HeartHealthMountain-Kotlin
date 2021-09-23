@@ -18,6 +18,8 @@ abstract class HealthDataSource(val name: String) : Subject {
     override fun removeObserver(whatNotToCall: (Any?) -> Unit) {
         observers.remove(whatNotToCall)
     }
+
+    open fun updateValue() {}  // the hook, overridden by sensor integrator
 }
 
 abstract class Data(val name: String) {
@@ -26,6 +28,23 @@ abstract class Data(val name: String) {
     open fun updateValue() {}  // a hook
 }
 
-abstract class HealthData(val healthDataSource: String, name: String) : Data(name), Subject {
+abstract class HealthData(val healthDataSource: HealthDataSource, name: String) : Data(name), Subject, Observer {
     protected var time: Date? = null // time doesn't exist until its base class Data has value
+
+    override var observers: MutableList<(Any?) -> Unit> = mutableListOf()
+
+    override fun registerObserver(whatToCall: (Any?) -> Unit) {
+        observers.add(whatToCall)
+    }
+
+    override fun notifyObservers() {
+        for (o in observers) {
+            o(value)
+        }
+    }
+
+    override fun removeObserver(whatNotToCall: (Any?) -> Unit) {
+        observers.remove(whatNotToCall)
+    }
+
 }
