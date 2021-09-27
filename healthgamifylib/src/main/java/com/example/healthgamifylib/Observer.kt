@@ -4,13 +4,14 @@ interface Observer { //subscriber
     fun update(value: Any?) : Unit
 }
 
-interface Subject {
-    var observers: MutableList<(Any?) -> Unit>
+abstract class Subject {
+    var observers: MutableList<(Any?) -> Unit> = mutableListOf()
+
     fun registerObserver(whatToCall: (Any?) -> Unit) : Unit {
         observers.add(whatToCall)
     }
     fun removeObserver(whatNotToCall: (Any?) -> Unit) : Unit{
         observers.remove(whatNotToCall)
     }
-    fun notifyObservers() : Unit
+    abstract fun notifyObservers() : Unit
 }
