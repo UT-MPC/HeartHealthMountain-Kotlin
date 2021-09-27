@@ -11,54 +11,50 @@ import kotlin.random.Random
 
 @RequiresApi(Build.VERSION_CODES.O)
 class WithingsScale(name: String): HealthDataSource(name) {
-    override fun updateValue() {
-        val timer = Timer()
-        timer.schedule(NewValue(), Date(), Duration.ofSeconds(updatePeriod).seconds*1000)
+    override fun updateHealthDataFromSource() {
+        if (Random.nextInt(0,10) % 10 != 0) {
+            value = Random.nextInt(100, 200)
+        } else {
+            value = -1
+            Log.i("Weight", "weight is null")
+        }
     }
 
-    inner class NewValue(): TimerTask(){
+    inner class CallUpdateValue(): TimerTask(){
         override fun run() {
-            if (Random.nextInt(0,10) % 10 != 0) {
-                value = Random.nextInt(100, 200)
-                notifyObservers()
-            } else {
-                value = -1
-                Log.i("Weight", "weight is null")
-            }
+            updateValue()
         }
     }
 
     var updatePeriod: Long = 20
 
     init {
-        updateValue()
+        val timer = Timer()
+        timer.schedule(CallUpdateValue(), Date(), Duration.ofSeconds(updatePeriod).seconds*1000)
     }
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
 class ActivityTracker(name: String) : HealthDataSource(name){
-    override fun updateValue() {
-        value = 0
-        val timer = Timer()
-        timer.schedule(NewValue(), Date(), Duration.ofSeconds(updatePeriod).seconds*1000)
+    override fun updateHealthDataFromSource() {
+        if (Random.nextInt(0,10) % 5 != 0) {
+            value += Random.nextInt(0, 200)
+        } else {
+            value = -1
+            Log.i("Step", "step is null")
+        }
     }
 
-    inner class NewValue(): TimerTask(){
+    inner class CallUpdateValue(): TimerTask(){
         override fun run() {
-            if (Random.nextInt(0,10) % 5 != 0) {
-                value += Random.nextInt(0, 200)
-                notifyObservers()
-            } else {
-                value = -1
-                Log.i("Step", "step is null")
-            }
+            updateValue()
         }
-//        TODO("Get new weight in a less fake way!!")
     }
     var updatePeriod: Long = 1  // updating step data every second
 
     init {
-        updateValue()
+        val timer = Timer()
+        timer.schedule(CallUpdateValue(), Date(), Duration.ofSeconds(updatePeriod).seconds*1000)
     }
 }
 
@@ -76,6 +72,7 @@ class Step(healthDataSource: HealthDataSource, name: String) : HealthData(health
 }
 
 class Weighed(healthDataSource: HealthDataSource, name: String) : HealthData(healthDataSource, name){
+
     override fun update(value: Any?) {
         this.value = value as Int
         notifyObservers()

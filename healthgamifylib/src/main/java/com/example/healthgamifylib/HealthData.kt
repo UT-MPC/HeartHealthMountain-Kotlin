@@ -10,14 +10,16 @@ abstract class HealthDataSource(val name: String) : Subject() {
             o(value)
         }
     }
-
-    open fun updateValue() {}  // the hook, overridden by sensor integrator
+    open fun updateValue() {// the hook, overridden by sensor integrator
+        updateHealthDataFromSource()
+        notifyObservers()
+    }
+    abstract fun updateHealthDataFromSource()
 }
 
 abstract class HealthData(val healthDataSource: HealthDataSource, name: String) : Subject(), Observer {
     protected var creationDate: Date = Date()  // allows backtracking
     var value: Int = -1
-    open fun updateValue() {}  // a hook
     protected var time: Date? = null // time doesn't exist until its base class Data has value
 
     override fun notifyObservers() {
