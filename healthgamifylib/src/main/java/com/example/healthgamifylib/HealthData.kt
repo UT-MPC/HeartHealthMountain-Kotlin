@@ -5,18 +5,11 @@ import java.util.*
 abstract class HealthDataSource(val name: String) : Subject {
     override var observers: MutableList<(Any?) -> Unit> = mutableListOf()
     var value: Int = -1
-    override fun registerObserver(whatToCall: (Any?) -> Unit) {
-        observers.add(whatToCall)
-    }
 
     override fun notifyObservers() {
         for (o in observers) {
             o(value)
         }
-    }
-
-    override fun removeObserver(whatNotToCall: (Any?) -> Unit) {
-        observers.remove(whatNotToCall)
     }
 
     open fun updateValue() {}  // the hook, overridden by sensor integrator
@@ -33,18 +26,10 @@ abstract class HealthData(val healthDataSource: HealthDataSource, name: String) 
 
     override var observers: MutableList<(Any?) -> Unit> = mutableListOf()
 
-    override fun registerObserver(whatToCall: (Any?) -> Unit) {
-        observers.add(whatToCall)
-    }
-
     override fun notifyObservers() {
         for (o in observers) {
             o(value)
         }
-    }
-
-    override fun removeObserver(whatNotToCall: (Any?) -> Unit) {
-        observers.remove(whatNotToCall)
     }
 
 }

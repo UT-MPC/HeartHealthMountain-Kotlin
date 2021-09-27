@@ -6,7 +6,11 @@ interface Observer { //subscriber
 
 interface Subject {
     var observers: MutableList<(Any?) -> Unit>
-    fun registerObserver(whatToCall: (Any?) -> Unit) : Unit
-    fun removeObserver(whatNotToCall: (Any?) -> Unit) : Unit
+    fun registerObserver(whatToCall: (Any?) -> Unit) : Unit {
+        observers.add(whatToCall)
+    }
+    fun removeObserver(whatNotToCall: (Any?) -> Unit) : Unit{
+        observers.remove(whatNotToCall)
+    }
     fun notifyObservers() : Unit
 }
