@@ -14,13 +14,10 @@ abstract class HealthDataSource(val name: String) : Subject() {
     open fun updateValue() {}  // the hook, overridden by sensor integrator
 }
 
-abstract class Data(val name: String) : Subject() {
+abstract class HealthData(val healthDataSource: HealthDataSource, name: String) : Subject(), Observer {
     protected var creationDate: Date = Date()  // allows backtracking
     var value: Int = -1
     open fun updateValue() {}  // a hook
-}
-
-abstract class HealthData(val healthDataSource: HealthDataSource, name: String) : Data(name), Observer {
     protected var time: Date? = null // time doesn't exist until its base class Data has value
 
     override fun notifyObservers() {

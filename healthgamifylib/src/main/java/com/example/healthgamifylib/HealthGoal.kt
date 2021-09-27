@@ -6,15 +6,13 @@ import androidx.annotation.RequiresApi
 import java.time.Duration
 import java.util.*
 
-abstract class HealthGoal(var targetValue: Int) : Subject()
-
 @RequiresApi(Build.VERSION_CODES.O)
 abstract class WindowGoal(
-    targetValue: Int,
+    var targetValue: Int,
     var start: Date,
     var window: Duration,
     var subject: Subject
-) : HealthGoal(targetValue), Observer {
+) : Subject(), Observer {
 
     override fun notifyObservers() {
         for (o in observers) {
