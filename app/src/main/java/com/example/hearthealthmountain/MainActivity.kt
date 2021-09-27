@@ -21,7 +21,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var activityTracker: ActivityTracker
 
     //    private lateinit var heart: Heart
-    private lateinit var pushButtonsGoal: PushButtonsGoal
+    // private lateinit var pushButtonsGoal: PushButtonsGoal
 
     @RequiresApi(Build.VERSION_CODES.O)
     private lateinit var dailyWeighIn: DailyWeighIn
@@ -50,22 +50,20 @@ class MainActivity : AppCompatActivity() {
 
         val dailyWeighIn = DailyWeighIn(
             repetitions = 30,
-            streak = 25,
             targetValue = 1,
             start = startDate,
             window = Duration.ofSeconds(withingsScale.updatePeriod),
-            subject = weighed
+            observedData = weighed
         )
         dailyWeighIn.registerObserver(heart::update)
 
         val step = Step(healthDataSource = activityTracker, name = "step")
         val dailyStepGoal = DailyStepGoal(
             repetitions = 30,
-            streak = 30,
+            observedData = step,
             targetValue = 1600,
             start = startDate,
-            window = Duration.ofSeconds(activityTracker.updatePeriod*20),
-            subject = step
+            window = Duration.ofSeconds(activityTracker.updatePeriod*20)
         )
         dailyStepGoal.registerObserver(heart::update)
 

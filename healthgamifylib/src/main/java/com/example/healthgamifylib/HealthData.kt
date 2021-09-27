@@ -17,8 +17,7 @@ abstract class HealthDataSource(val name: String) : Subject() {
     abstract fun updateHealthDataFromSource()
 }
 
-abstract class HealthData(val healthDataSource: HealthDataSource, name: String) : Subject(), Observer {
-    protected var creationDate: Date = Date()  // allows backtracking
+abstract class HealthData(val healthDataSource: HealthDataSource, val name: String) : Subject(), Observer {
     var value: Int = -1
     protected var time: Date? = null // time doesn't exist until its base class Data has value
 
