@@ -8,7 +8,9 @@ class Heart(maxValue: Int) : Points(maxValue) {
     private val tag = "Heart"
 
     override fun update(value: Any?) {
-        this.value = calculatePoints(value as Boolean)
+        if (value is Boolean) {
+            this.value = calculatePoints(value as Boolean)
+        }
         Log.i(tag, "Num hearts: ${this.value}")
     }
     private fun calculatePoints(v: Boolean) : Int {

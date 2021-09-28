@@ -10,7 +10,7 @@ abstract class HealthDataSource(val name: String) : Subject() {
             o(value)
         }
     }
-    open fun updateValue() {// the hook, overridden by sensor integrator
+    fun updateValue() {
         updateHealthDataFromSource()
         notifyObservers()
     }

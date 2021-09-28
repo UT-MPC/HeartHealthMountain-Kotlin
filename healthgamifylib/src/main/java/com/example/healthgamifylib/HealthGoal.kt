@@ -73,6 +73,7 @@ open class RepeatingWindowGoal(
     val goalArray = mutableListOf<Boolean>()
     var repetitionsCompleted = 0
     val lock = ReentrantLock()
+    var currentStreak = 0
 
     private inner class UpdateWindowGoal() : TimerTask() {
         override fun run() {
@@ -80,9 +81,12 @@ open class RepeatingWindowGoal(
             Log.i("Repeating", "goalArray: ${goalArray.toString()}")
             repetitionsCompleted++
             if (embeddedWindowGoal.goalAchieved) {
-                streak++
+                currentStreak++
+                if (currentStreak >= streak){
+                    notifyObservers()
+                }
             } else {
-                streak = 0
+                currentStreak = 0
             }
             if (goalArray.size < repetitions) {
                 // start = Date(start.time + goalArray.size * window.seconds * 1000)
@@ -108,7 +112,7 @@ open class RepeatingWindowGoal(
 
     override fun notifyObservers() {
         for (o in observers) {
-            o(streak)
+            o(currentStreak)
         }
     }
 }
