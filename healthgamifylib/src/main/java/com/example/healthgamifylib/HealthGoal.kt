@@ -39,7 +39,7 @@ open class WindowGoal(
     val tag = "Window Goal"
     private inner class StartWindow() : TimerTask() {
         override fun run() {
-            // lock.lock()
+            lock.lock()
             Log.i(tag, "====Window Starting ${observedData.name}===")
             goalAchieved = false
             observedData.registerObserver(this@WindowGoal::update)
@@ -51,14 +51,14 @@ open class WindowGoal(
             Log.i(tag, "====Window Ending ${observedData.name}===")
             observedData.removeObserver(this@WindowGoal::update)
             finalizeGoal()
-            // lock.unlock()
+            lock.unlock()
         }
     }
 
     init {
         Log.i(tag, "constructor, ${observedData.name}")
         timer.schedule(StartWindow(), start)
-        timer.schedule(EndWindow(), start.time + window.seconds * 1000)
+        timer.schedule(EndWindow(), window.seconds*1000)
     }
 }
 
@@ -77,10 +77,16 @@ open class RepeatingWindowGoal(
     private inner class UpdateWindowGoal() : TimerTask() {
         override fun run() {
             goalArray.add(embeddedWindowGoal.goalAchieved)
+            Log.i("Repeating", "goalArray: ${goalArray.toString()}")
             repetitionsCompleted++
+            if (embeddedWindowGoal.goalAchieved) {
+                streak++
+            } else {
+                streak = 0
+            }
             if (goalArray.size < repetitions) {
-                start = Date(start.time + goalArray.size * window.seconds * 1000)
-                embeddedWindowGoal = WindowGoal(targetValue, observedData, start, window, lock)
+                // start = Date(start.time + goalArray.size * window.seconds * 1000)
+                embeddedWindowGoal = WindowGoal(targetValue, observedData, Date(), window, lock)
                 for (o in observers) {
                     embeddedWindowGoal.registerObserver(o)
                 }
@@ -101,6 +107,8 @@ open class RepeatingWindowGoal(
     }
 
     override fun notifyObservers() {
-        // no-op
+        for (o in observers) {
+            o(streak)
+        }
     }
 }

@@ -1,7 +1,6 @@
 package com.example.hearthealthmountain
 
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import com.example.healthgamifylib.HealthData
 import com.example.healthgamifylib.HealthDataSource
@@ -12,12 +11,14 @@ import kotlin.random.Random
 @RequiresApi(Build.VERSION_CODES.O)
 class WithingsScale(name: String): HealthDataSource(name) {
     override fun updateHealthDataFromSource() {
-        if (Random.nextInt(0,10) % 10 != 0) {
-            value = Random.nextInt(100, 200)
-        } else {
-            value = -1
-            Log.i("Weight", "weight is null")
-        }
+//        if (Random.nextInt(0,10) % 10 != 0) {
+//            value = Random.nextInt(100, 200)
+//            Log.i("Weight", "weight is $value")
+//        } else {
+//            value = -1
+//            Log.i("Weight", "weight is null")
+//        }
+        value = Random.nextInt(100, 200)
     }
 
     inner class CallUpdateValue(): TimerTask(){
@@ -37,12 +38,14 @@ class WithingsScale(name: String): HealthDataSource(name) {
 @RequiresApi(Build.VERSION_CODES.O)
 class ActivityTracker(name: String) : HealthDataSource(name){
     override fun updateHealthDataFromSource() {
-        if (Random.nextInt(0,10) % 5 != 0) {
-            value += Random.nextInt(0, 200)
-        } else {
-            value = -1
-            Log.i("Step", "step is null")
-        }
+//        if (Random.nextInt(0,10) % 5 != 0) {
+//            value += Random.nextInt(0, 200)
+//            Log.i("Step", "step is $value")
+//        } else {
+//            value = -1
+//            Log.i("Step", "step is null")
+//        }
+        value += Random.nextInt(0, 200)
     }
 
     inner class CallUpdateValue(): TimerTask(){
