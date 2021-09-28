@@ -3,7 +3,6 @@ package com.example.hearthealthmountain
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.widget.Button
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -74,11 +73,11 @@ class MainActivity : AppCompatActivity() {
 //         pushButtonsGoal = PushButtonsGoal(5, 3, Date(), Duration.ofMinutes(1), pushButtonSubject)
 //
 //         var pushes: Int = 0
-        val pushButton: Button = findViewById(R.id.button)
-        pushButton.setOnClickListener {
-//             pushButtonSubject.notifyObservers()
-//             pushButton.text = (++pushes).toString()
-        }
+//        val pushButton: Button = findViewById(R.id.button)
+//        pushButton.setOnClickListener {
+////             pushButtonSubject.notifyObservers()
+////             pushButton.text = (++pushes).toString()
+//        }
     }
 
     inner class updateTextView(): TimerTask() {

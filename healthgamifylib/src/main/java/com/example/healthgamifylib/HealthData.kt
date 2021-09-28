@@ -3,7 +3,7 @@ package com.example.healthgamifylib
 import java.util.*
 
 abstract class HealthDataSource(val name: String) : Subject() {
-    var value: Int = -1
+    var value: Any = -1
 
     override fun notifyObservers() {
         for (o in observers) {
@@ -18,7 +18,7 @@ abstract class HealthDataSource(val name: String) : Subject() {
 }
 
 abstract class HealthData(val healthDataSource: HealthDataSource, val name: String) : Subject(), Observer {
-    var value: Int = -1
+    var value: Any = -1
     protected var time: Date? = null // time doesn't exist until its base class Data has value
 
     override fun notifyObservers() {

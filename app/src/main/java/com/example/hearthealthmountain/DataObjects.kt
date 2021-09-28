@@ -45,7 +45,7 @@ class ActivityTracker(name: String) : HealthDataSource(name){
 //            value = -1
 //            Log.i("Step", "step is null")
 //        }
-        value += Random.nextInt(0, 200)
+        value = Random.nextInt(0, 200)
     }
 
     inner class CallUpdateValue(): TimerTask(){
