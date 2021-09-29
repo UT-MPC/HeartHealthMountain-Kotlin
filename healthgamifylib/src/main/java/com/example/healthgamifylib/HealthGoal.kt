@@ -14,6 +14,7 @@ open class WindowGoal(
 ) : Subject(), Observer {
     private val timer = Timer()
     var goalAchieved: Boolean = false
+    private var log = false
 
     // satisfying the Subject contract
     override fun notifyObservers() {
@@ -40,7 +41,9 @@ open class WindowGoal(
     private inner class StartWindow() : TimerTask() {
         override fun run() {
             lock.lock()
-            Log.i(tag, "====Window Starting ${observedData.name}===")
+            if (log) {
+                Log.i(tag, "====Window Starting ${observedData.name}===")
+            }
             goalAchieved = false
             observedData.registerObserver(this@WindowGoal::update)
         }
@@ -48,7 +51,9 @@ open class WindowGoal(
 
     private inner class EndWindow() : TimerTask() {
         override fun run() {
-            Log.i(tag, "====Window Ending ${observedData.name}===")
+            if (log) {
+                Log.i(tag, "====Window Ending ${observedData.name}===")
+            }
             observedData.removeObserver(this@WindowGoal::update)
             finalizeGoal()
             lock.unlock()
@@ -56,7 +61,9 @@ open class WindowGoal(
     }
 
     init {
-        Log.i(tag, "constructor, ${observedData.name}")
+        if (log) {
+            Log.i(tag, "constructor, ${observedData.name}")
+        }
         timer.schedule(StartWindow(), start)
         timer.schedule(EndWindow(), window.seconds*1000)
     }
@@ -74,11 +81,14 @@ open class RepeatingWindowGoal(
     var repetitionsCompleted = 0
     val lock = ReentrantLock()
     var currentStreak = 0
+    private var log = false
 
     private inner class UpdateWindowGoal() : TimerTask() {
         override fun run() {
             goalArray.add(embeddedWindowGoal.goalAchieved)
-            Log.i("Repeating", "goalArray: ${goalArray.toString()}")
+            if (log) {
+                Log.i("Repeating", "goalArray: ${goalArray.toString()}")
+            }
             repetitionsCompleted++
             if (embeddedWindowGoal.goalAchieved) {
                 currentStreak++
@@ -96,7 +106,12 @@ open class RepeatingWindowGoal(
                 }
             }
             else {
-                Log.i("RepeatingWindowGoal", "repetitions completed.\n Goals: ${goalArray.toString()}")
+                if (log) {
+                    Log.i(
+                        "RepeatingWindowGoal",
+                        "repetitions completed.\n Goals: ${goalArray.toString()}"
+                    )
+                }
             }
         }
     }
