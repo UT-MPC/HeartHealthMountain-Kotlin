@@ -76,7 +76,7 @@ open class RepeatingWindowGoal(
     var repetitions: Int, var streak: Int = 0
 ) : Subject() {
     var embeddedWindowGoal: WindowGoal
-    val timer: Timer = Timer()
+    private val timer: Timer = Timer()
     val goalArray = mutableListOf<Boolean>()
     var repetitionsCompleted = 0
     val lock = ReentrantLock()
