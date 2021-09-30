@@ -1,7 +1,11 @@
 package com.example.hearthealthmountain
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import com.example.healthgamifylib.Points
+import com.example.healthgamifylib.Progress
+import java.lang.Integer.max
 import java.lang.Integer.min
 
 class Heart(maxValue: Int) : Points(maxValue) {
@@ -25,6 +29,21 @@ class Heart(maxValue: Int) : Points(maxValue) {
         }
     }
 
+}
+
+class Mountain(totalProgress: Int) : Progress(totalProgress) {
+    @RequiresApi(Build.VERSION_CODES.N)
+    override fun update(value: Any?) {
+        if (value is Boolean) {
+            if (value) {
+                currentProgress ++
+            }
+            else {
+                currentProgress = max(currentProgress-1, 0)
+            }
+        }
+        Log.i("Mountain", "current progress: $currentProgress")
+    }
 }
 
 //class Coins(maxValue: Int) : Points(maxValue) {

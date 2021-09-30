@@ -14,7 +14,7 @@ open class WindowGoal(
 ) : Subject(), Observer {
     private val timer = Timer()
     var goalAchieved: Boolean = false
-    private var log = false
+    protected var log = false
 
     // satisfying the Subject contract
     override fun notifyObservers() {
@@ -81,7 +81,7 @@ open class RepeatingWindowGoal(
     var repetitionsCompleted = 0
     val lock = ReentrantLock()
     var currentStreak = 0
-    private var log = false
+    var log = false
 
     private inner class UpdateWindowGoal() : TimerTask() {
         override fun run() {

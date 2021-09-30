@@ -43,6 +43,7 @@ class MainActivity : AppCompatActivity() {
 
         weighed = Weighed(healthDataSource = withingsScale, name = "weighed")
         weightUI = findViewById<TextView>(R.id.editTextWeight)
+        val mountain = Mountain(totalProgress = 20)
 
         val timer = Timer()
         timer.schedule(updateTextView(), Date(), 20*1000)
@@ -55,6 +56,8 @@ class MainActivity : AppCompatActivity() {
             observedData = weighed
         )
         dailyWeighIn.registerObserver(heart::update)
+        dailyWeighIn.registerObserver(mountain::update)
+        dailyWeighIn.log = true
 
         val step = Step(healthDataSource = activityTracker, name = "step")
         val dailyStepGoal = DailyStepGoal(
@@ -65,6 +68,7 @@ class MainActivity : AppCompatActivity() {
             window = Duration.ofSeconds(activityTracker.updatePeriod*20)
         )
         dailyStepGoal.registerObserver(heart::update)
+        //dailyStepGoal.registerObserver(mountain::update)
 
 
 
