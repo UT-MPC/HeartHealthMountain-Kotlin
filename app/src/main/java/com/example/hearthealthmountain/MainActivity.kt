@@ -43,6 +43,9 @@ class MainActivity : AppCompatActivity() {
 
         weighed = Weighed(healthDataSource = withingsScale, name = "weighed")
         weightUI = findViewById<TextView>(R.id.editTextWeight)
+
+        val weightAnomaly = WeightAnomaly(-1, -1, weighed)
+        val trigger = Trigger(weightAnomaly)
         val mountain = Mountain(totalProgress = 20)
 
         val timer = Timer()
@@ -57,7 +60,7 @@ class MainActivity : AppCompatActivity() {
         )
         dailyWeighIn.registerObserver(heart::update)
         dailyWeighIn.registerObserver(mountain::update)
-        dailyWeighIn.log = true
+        dailyWeighIn.log = false
 
         val step = Step(healthDataSource = activityTracker, name = "step")
         val dailyStepGoal = DailyStepGoal(
