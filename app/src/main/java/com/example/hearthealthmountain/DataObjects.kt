@@ -103,7 +103,7 @@ class WeightAnomaly(var upperBound: Int, var lowerBound: Int, inputData: HealthD
         upperBound = inputData.value as Int + 30
         lowerBound = inputData.value as Int - 30
 
-        Log.i("Weight Anomaly", "Current weight is ${value}")
+        Log.i("Weight Anomaly", "Current weight is $value")
     }
     init {
         inputData.registerObserver(this::update)
