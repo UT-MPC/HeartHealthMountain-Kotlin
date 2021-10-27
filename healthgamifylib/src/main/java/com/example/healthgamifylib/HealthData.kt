@@ -28,12 +28,3 @@ abstract class HealthData(val healthDataSource: HealthDataSource, val name: Stri
     }
 
 }
-
-abstract class AnomalyDetection(val inputData: HealthData): Subject(), Observer {
-    var isAnomaly: Boolean = false
-    override fun notifyObservers() {
-        for (o in observers) {
-            o(isAnomaly)
-        }
-    }
-}
