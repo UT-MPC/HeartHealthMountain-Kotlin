@@ -7,25 +7,16 @@ import java.time.Duration
 
 abstract class Context(val name: String, val duration: Duration?)
 
-abstract class Anomaly (val inputData: HealthData, var threshold: Int, val context: Context?, val duration: Duration?) {
-    operator fun plus(anomaly: Anomaly): Anomaly {
-        return this
-    }
-}
-
-class AnomalyDetection(val threshold: Int, val context: Context?, val duration: Duration?): Subject(), Observer {
-//    val anomalyMutableList = mutableListOf<Anomaly>()
-    var isAnomaly: Boolean = false
-    lateinit var anomaly: Anomaly
+abstract class Anomaly (val observedData: HealthData, var threshold: Int, val context: Context?, val duration: Duration?) : Subject(), Observer {
+    protected var isAnomaly: Boolean = false
     override fun update(value: Any?) {
-        if (((value as HealthData).value as Int) > threshold){
+        checkAnomaly()
+        if (isAnomaly){
             notifyObservers()
         }
     }
-    override fun notifyObservers() {
-        for (o in observers) {
-            TODO("pass a concrete Anomaly to the observers?")
-            o(isAnomaly)
-        }
-    }
+    abstract fun checkAnomaly()
+//    init {
+//        observedData.registerObserver(this::update)
+//    }
 }
