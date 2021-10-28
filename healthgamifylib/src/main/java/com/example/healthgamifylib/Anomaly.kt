@@ -1,8 +1,5 @@
-package com.example.hearthealthmountain
+package com.example.healthgamifylib
 
-import com.example.healthgamifylib.HealthData
-import com.example.healthgamifylib.Observer
-import com.example.healthgamifylib.Subject
 import java.time.Duration
 
 abstract class Context(val name: String, val duration: Duration?)
@@ -16,7 +13,4 @@ abstract class Anomaly (val observedData: HealthData, var threshold: Int, val co
         }
     }
     abstract fun checkAnomaly()
-//    init {
-//        observedData.registerObserver(this::update)
-//    }
 }
