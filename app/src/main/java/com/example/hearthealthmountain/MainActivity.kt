@@ -47,6 +47,9 @@ class MainActivity : AppCompatActivity() {
 //        val weightAnomaly = WeightAnomaly(-1, -1, weighed)
 //        val trigger = Trigger(weightAnomaly)
 //        val mountain = Mountain(totalProgress = 20)
+        val weightAnomaly = WeightAnomaly(weighed, context = null, duration = null, threshold = 150)
+        val weightTrigger = WeightTrigger()
+        weightAnomaly.registerObserver(weightTrigger::update)
 
         val timer = Timer()
         timer.schedule(updateTextView(), Date(), 20*1000)
