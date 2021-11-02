@@ -6,7 +6,6 @@ import com.example.healthgamifylib.Context
 import com.example.healthgamifylib.HealthData
 import com.example.healthgamifylib.Observer
 import java.time.Duration
-import java.util.*
 
 class WeightAnomaly(observedData: HealthData, threshold: Int, context: Context?,
                     duration: Duration?
@@ -51,13 +50,6 @@ class WeightDiffAnomaly(observedData: HealthData, threshold: Int, context: Conte
         val diff = prevWeight - value as Int
         prevWeight = value
         return (diff > threshold)
-    }
-
-    override fun updateContext() {  // TODO: this method sucks
-        if (observedData.time != null) {  // TODO: how to make this atomic?
-            context?.timeA = observedData.time!!
-            context?.timeB = Date(context?.timeA?.time?.plus(86400)!!)
-        }
     }
 
     override fun notifyObservers() {
