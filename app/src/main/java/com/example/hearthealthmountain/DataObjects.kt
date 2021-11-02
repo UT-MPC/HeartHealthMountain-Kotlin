@@ -78,6 +78,7 @@ class Weighed(healthDataSource: HealthDataSource, name: String) : HealthData(hea
 
     override fun update(value: Any?) {
         this.value = value as Int
+        this.time = Date()
         notifyObservers()
     }
 

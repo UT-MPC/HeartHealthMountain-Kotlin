@@ -6,6 +6,7 @@ import android.util.Log
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import com.example.healthgamifylib.Context
 import java.time.Duration
 import java.util.*
 
@@ -34,7 +35,7 @@ class MainActivity : AppCompatActivity() {
         val startDate = Date(Date().time + 5000)  // 5 seconds after onCreate starts running
 
         heart = Heart(1000)
-        heartUI = findViewById<TextView> (R.id.editTextHeart)
+        heartUI = findViewById<TextView>(R.id.editTextHeart)
         heart.value = 500  // let there be 500 hearts in the beginning
         heartUI.text = heart.value.toString()
 
@@ -47,12 +48,20 @@ class MainActivity : AppCompatActivity() {
 //        val weightAnomaly = WeightAnomaly(-1, -1, weighed)
 //        val trigger = Trigger(weightAnomaly)
 //        val mountain = Mountain(totalProgress = 20)
-        val weightAnomaly = WeightAnomaly(weighed, context = null, duration = null, threshold = 150)
+        val weightAnomaly =
+            WeightAnomaly(weighed, context = Context(true), duration = null, threshold = 150)
+        val weightDiffAnomaly = WeightDiffAnomaly(
+            weighed,
+            context = Context(false, "day", Date(), Date()),
+            duration = null,
+            threshold = 5
+        )
         val weightTrigger = WeightTrigger()
         weightAnomaly.registerObserver(weightTrigger::update)
+        weightDiffAnomaly.registerObserver(weightTrigger::update)
 
         val timer = Timer()
-        timer.schedule(updateTextView(), Date(), 20*1000)
+        timer.schedule(updateTextView(), Date(), 20 * 1000)
 
         val dailyWeighIn = DailyWeighIn(
             repetitions = 30,
@@ -71,12 +80,10 @@ class MainActivity : AppCompatActivity() {
             observedData = step,
             targetValue = 1600,
             start = startDate,
-            window = Duration.ofSeconds(activityTracker.updatePeriod*20)
+            window = Duration.ofSeconds(activityTracker.updatePeriod * 20)
         )
         dailyStepGoal.registerObserver(heart::update)
         //dailyStepGoal.registerObserver(mountain::update)
-
-
 
 
 //         val pushButtonSubject = PushButtonSubject()
@@ -90,7 +97,7 @@ class MainActivity : AppCompatActivity() {
 //        }
     }
 
-    inner class updateTextView(): TimerTask() {
+    inner class updateTextView() : TimerTask() {
         override fun run() {
             Log.i("updateTextView", "updating")
             heartUI.text = heart.value.toString()

@@ -6,20 +6,23 @@ import com.example.healthgamifylib.Context
 import com.example.healthgamifylib.HealthData
 import com.example.healthgamifylib.Observer
 import java.time.Duration
+import java.util.*
 
-class WeightAnomaly(observedData: HealthData, threshold: Int, context: Context?,
-                    duration: Duration?
-) : Anomaly(observedData, threshold,
+class WeightAnomaly(
+    observedData: HealthData, threshold: Int, context: Context,
+    duration: Duration?
+) : Anomaly(
+    observedData, threshold,
     context, duration
 ) {
-    override fun checkAnomaly(value: Any?) : Boolean {
+    override fun checkAnomaly(value: Any?): Boolean {
         Log.i("WeightAnomaly", "$value")
-            return (value as Int > threshold)
+        return (value as Int > threshold)
     }
 
     override fun notifyObservers() {
         for (o in observers) {
-            o(null)
+            o("Overweight")
         }
     }
 
@@ -30,17 +33,18 @@ class WeightAnomaly(observedData: HealthData, threshold: Int, context: Context?,
 
 class WeightTrigger() : Observer {
     override fun update(value: Any?) {
-        Log.i("WeightTrigger", "Overweight")
+        Log.i("WeightTrigger", value as String)
     }
 
 }
 
-class WeightDiffAnomaly(observedData: HealthData, threshold: Int, context: Context?,
-                        duration: Duration?
-) : Anomaly(observedData, threshold,
+class WeightDiffAnomaly(
+    observedData: HealthData, threshold: Int, context: Context,
+    duration: Duration?
+) : Anomaly(
+    observedData, threshold,
     context, duration
 ) {
-    // TODO: test this class
     var prevWeight = -1
     override fun checkAnomaly(value: Any?): Boolean {
         if (prevWeight == -1) {
@@ -52,9 +56,25 @@ class WeightDiffAnomaly(observedData: HealthData, threshold: Int, context: Conte
         return (diff > threshold)
     }
 
+    override fun updateContext() {
+        context.timeA = observedData.time!!
+        context.timeB = Date(context.timeA.time + 86400)
+    }
+
     override fun notifyObservers() {
         for (o in observers) {
-            o(null)
+            o("Weight diff too much. Prev weight = $prevWeight")
         }
+    }
+
+    override fun printLog() {
+        Log.i(
+            "WeightDiffAnomaly",
+            "update function called, context timeA is ${context.timeA}, context timeB is ${context.timeB}, observedData time is ${observedData.time}"
+        )
+    }
+
+    init {
+        observedData.registerObserver(this::update)
     }
 }
