@@ -64,7 +64,7 @@ class ActivityTracker(name: String) : HealthDataSource(name){
 @RequiresApi(Build.VERSION_CODES.O)
 class Step(healthDataSource: HealthDataSource, name: String) : HealthData(healthDataSource, name){
 // observes Activity Tracker
-    override fun update(value: Any?) {
+    override fun updateValue(value: Any?) {
         this.value = value as Int
         notifyObservers()
     }
@@ -76,9 +76,8 @@ class Step(healthDataSource: HealthDataSource, name: String) : HealthData(health
 
 class Weighed(healthDataSource: HealthDataSource, name: String) : HealthData(healthDataSource, name){
 
-    override fun update(value: Any?) {
+    override fun updateValue(value: Any?) {
         this.value = value as Int
-        this.time = Date()
         notifyObservers()
     }
 

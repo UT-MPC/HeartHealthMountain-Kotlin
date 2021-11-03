@@ -27,4 +27,14 @@ abstract class HealthData(val healthDataSource: HealthDataSource, val name: Stri
         }
     }
 
+    override fun update(value: Any?) {
+        updateTime()
+        updateValue(value)
+    }
+
+    abstract fun updateValue(value: Any?)
+    open fun updateTime() {
+        time = Date()
+    }
+
 }
