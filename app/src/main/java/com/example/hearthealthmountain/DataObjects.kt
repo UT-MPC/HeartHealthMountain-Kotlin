@@ -67,6 +67,7 @@ class Step(healthDataSource: HealthDataSource, name: String) : HealthData(health
     override fun updateValue(value: Any?) {
         this.value = value as Int
         notifyObservers()
+    
     }
 
     init {
