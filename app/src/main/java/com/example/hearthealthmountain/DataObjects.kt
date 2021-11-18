@@ -66,8 +66,6 @@ class Step(healthDataSource: HealthDataSource, name: String) : HealthData(health
 // observes Activity Tracker
     override fun updateValue(value: Any?) {
         this.value = value as Int
-        notifyObservers()
-    
     }
 
     init {
@@ -79,7 +77,6 @@ class Weighed(healthDataSource: HealthDataSource, name: String) : HealthData(hea
 
     override fun updateValue(value: Any?) {
         this.value = value as Int
-        notifyObservers()
     }
 
     init {

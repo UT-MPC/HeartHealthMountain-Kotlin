@@ -30,6 +30,7 @@ abstract class HealthData(val healthDataSource: HealthDataSource, val name: Stri
     override fun update(value: Any?) {
         updateTime()
         updateValue(value)
+        notifyObservers()
     }
 
     abstract fun updateValue(value: Any?)
