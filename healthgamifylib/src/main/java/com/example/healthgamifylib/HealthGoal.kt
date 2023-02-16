@@ -99,9 +99,12 @@ open class RepeatingWindowGoal(
                 currentStreak = 0
             }
             if (goalArray.size < repetitions) {
-                // start = Date(start.time + goalArray.size * window.seconds * 1000)
+                // keep track of the embeddedWindowGoal's observers before the embeddedWindowGoal closes
+                val embeddedWindowGoalObservers = embeddedWindowGoal.observers.toMutableList()
+
+                // create a new embeddedWindowGoal
                 embeddedWindowGoal = WindowGoal(targetValue, observedData, Date(), window, lock)
-                for (o in observers) {
+                for (o in embeddedWindowGoalObservers) {
                     embeddedWindowGoal.registerObserver(o)
                 }
             }
@@ -119,9 +122,15 @@ open class RepeatingWindowGoal(
     init {
         // this creates and starts the first repetition of the window goal
         embeddedWindowGoal = WindowGoal(targetValue, observedData, start, window, lock)
-        for (o in observers) {
+        /**
+         * `observers` should observe the RepeatingWindowGoal; it only cares about the currentStreak
+         * This version assumes that the embeddedWindowGoal's observers are registered elsewhere
+         * It is the user's responsibility to register the embeddedWindowGoal's observers
+         * Therefore the following 3 lines of code is commented out
+         for (o in observers) {
             embeddedWindowGoal.registerObserver(o)
         }
+         */
         timer.schedule(UpdateWindowGoal(), Date(start.time + window.seconds * 1000), window.seconds * 1000)
     }
 
