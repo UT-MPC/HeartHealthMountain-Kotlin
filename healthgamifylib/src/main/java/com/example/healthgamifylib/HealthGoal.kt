@@ -16,7 +16,7 @@ open class WindowGoal(
     var goalAchieved: Boolean = false
     protected var log = false
 
-    // satisfying the Subject contract
+    // satisfying the Subject contract; can be overridden for more tailored behavior
     override fun notifyObservers() {
         for (o in observers) {
             o(goalAchieved)
@@ -24,7 +24,7 @@ open class WindowGoal(
     }
 
     // satisfying the Observer contract; can be overridden for more tailored behavior
-    open override fun update(value: Any?) {
+    override fun update(value: Any?) {
         if (!goalAchieved && value as Int >= targetValue) {
             goalAchieved = true
             notifyObservers()
@@ -73,13 +73,12 @@ open class WindowGoal(
 open class RepeatingWindowGoal(
     val targetValue: Int, val observedData: HealthData,
     var start: Date, val window: Duration,
-    var repetitions: Int, var streak: Int = 0
+    var repetitions: Int, var streak: Int = 0, var embeddedWindowGoal: WindowGoal
 ) : Subject() {
-    var embeddedWindowGoal: WindowGoal
     private val timer: Timer = Timer()
     val goalArray = mutableListOf<Boolean>()
     var repetitionsCompleted = 0
-    val lock = ReentrantLock()
+    val lock = embeddedWindowGoal.lock
     var currentStreak = 0
     var log = false
 
@@ -120,8 +119,7 @@ open class RepeatingWindowGoal(
     }
 
     init {
-        // this creates and starts the first repetition of the window goal
-        embeddedWindowGoal = WindowGoal(targetValue, observedData, start, window, lock)
+
         /**
          * `observers` should observe the RepeatingWindowGoal; it only cares about the currentStreak
          * This version assumes that the embeddedWindowGoal's observers are registered elsewhere
