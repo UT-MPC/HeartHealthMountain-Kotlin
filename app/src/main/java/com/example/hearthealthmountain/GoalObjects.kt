@@ -4,8 +4,10 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import com.example.healthgamifylib.HealthData
 import com.example.healthgamifylib.RepeatingWindowGoal
+import com.example.healthgamifylib.WindowGoal
 import java.time.Duration
 import java.util.*
+import java.util.concurrent.locks.ReentrantLock
 
 @RequiresApi(Build.VERSION_CODES.O)
 //class PushButtonsGoal(repetitions: Int,
@@ -41,16 +43,26 @@ import java.util.*
 //        }
 //    }
 //}
-class DailyStepGoal(targetValue: Int, observedData: HealthData, start: Date, window: Duration,
-                    repetitions: Int
-) : RepeatingWindowGoal(targetValue,
-    observedData, start, window, repetitions
+class DailyStepGoal(repetitions: Int, streak: Int = 0, embeddedWindowGoal: WindowGoal
+) : RepeatingWindowGoal(repetitions, streak, embeddedWindowGoal
 )
 
+@RequiresApi(Build.VERSION_CODES.O)
+class StepGoal(targetValue: Int, observedData: HealthData, start: Date, window: Duration,
+               lock: ReentrantLock
+) : WindowGoal(targetValue, observedData,
+    start,
+    window, lock
+)
 
 @RequiresApi(Build.VERSION_CODES.O)
-class DailyWeighIn(targetValue: Int, observedData: HealthData, start: Date, window: Duration,
-                   repetitions: Int
-) : RepeatingWindowGoal(targetValue,
-    observedData, start, window, repetitions
+class DailyWeighIn(repetitions: Int, streak: Int = 0, embeddedWindowGoal: WindowGoal
+) : RepeatingWindowGoal(repetitions, streak, embeddedWindowGoal
+)
+
+@RequiresApi(Build.VERSION_CODES.O)
+class WeighInGoal(targetValue: Int, observedData: HealthData, start: Date, window: Duration,
+                  lock: ReentrantLock
+) : WindowGoal(targetValue,
+    observedData, start, window, lock
 )

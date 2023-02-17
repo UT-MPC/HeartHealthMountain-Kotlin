@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.healthgamifylib.Context
 import java.time.Duration
 import java.util.*
+import java.util.concurrent.locks.ReentrantLock
 
 // private key: 8b22a2fe-4245-400c-b225-a18dcf509f38
 // realm-cli login --api-key onheejte --private-api-key 8b22a2fe-4245-400c-b225-a18dcf509f38
@@ -63,24 +64,22 @@ class MainActivity : AppCompatActivity() {
         val timer = Timer()
         timer.schedule(updateTextView(), Date(), 20 * 1000)
 
+        val weighInGoal = WeighInGoal(targetValue = 1, observedData = weighed, start = startDate, window = Duration.ofSeconds(withingsScale.updatePeriod), lock = ReentrantLock())
+        weighInGoal.registerObserver(heart::update)
         val dailyWeighIn = DailyWeighIn(
             repetitions = 30,
-            targetValue = 1,
-            start = startDate,
-            window = Duration.ofSeconds(withingsScale.updatePeriod),
-            observedData = weighed
+            embeddedWindowGoal = weighInGoal
         )
-        dailyWeighIn.registerObserver(heart::update)
+
 //        dailyWeighIn.registerObserver(mountain::update)
         dailyWeighIn.log = false
 
         val step = Step(healthDataSource = activityTracker, name = "step")
+        val stepGoal = StepGoal(targetValue = 1600, observedData = step, start = startDate, window = Duration.ofSeconds(activityTracker.updatePeriod * 20), lock = ReentrantLock())
+        stepGoal.registerObserver(heart::update)
         val dailyStepGoal = DailyStepGoal(
             repetitions = 30,
-            observedData = step,
-            targetValue = 1600,
-            start = startDate,
-            window = Duration.ofSeconds(activityTracker.updatePeriod * 20)
+            embeddedWindowGoal = stepGoal
         )
         dailyStepGoal.registerObserver(heart::update)
         //dailyStepGoal.registerObserver(mountain::update)

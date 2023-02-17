@@ -71,16 +71,20 @@ open class WindowGoal(
 
 @RequiresApi(Build.VERSION_CODES.O)
 open class RepeatingWindowGoal(
-    val targetValue: Int, val observedData: HealthData,
-    var start: Date, val window: Duration,
     var repetitions: Int, var streak: Int = 0, var embeddedWindowGoal: WindowGoal
 ) : Subject() {
     private val timer: Timer = Timer()
     val goalArray = mutableListOf<Boolean>()
     var repetitionsCompleted = 0
-    val lock = embeddedWindowGoal.lock
     var currentStreak = 0
     var log = false
+
+    // variables for the embedded WindowGoal
+    val targetValue: Int = embeddedWindowGoal.targetValue
+    val observedData: HealthData = embeddedWindowGoal.observedData
+    private val start: Date = embeddedWindowGoal.start
+    val window: Duration = embeddedWindowGoal.window
+    val lock: ReentrantLock = embeddedWindowGoal.lock
 
     private inner class UpdateWindowGoal() : TimerTask() {
         override fun run() {
